@@ -40,7 +40,8 @@ export function registerRecorder(watcher: ShortcutWatcher, window: BrowserWindow
         format: 'v1',
         shortcut: { startAt: project.startAt, endAt: now },
         shortcutEvents
-      })
+      }),
+      'utf8'
     )
     shortcutEvents = []
     isRecording = false
