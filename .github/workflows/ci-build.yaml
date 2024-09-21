@@ -32,6 +32,7 @@ jobs:
         with:
           name: windows-build
           path: ./dist # 成果物が出力されるディレクトリを指定
+          retention-days: 2 #2日間保持
 
   build-macos:
     name: Build on macOS
@@ -56,6 +57,7 @@ jobs:
         with:
           name: macos-build
           path: ./dist # 成果物が出力されるディレクトリを指定
+          retention-days: 2 #2日間保持
 
   merge-results:
     name: Merge Build Artifacts
@@ -88,3 +90,4 @@ jobs:
         with:
           name: merged-build
           path: ./merged-build
+          retention-days: 2 #2日間保持
