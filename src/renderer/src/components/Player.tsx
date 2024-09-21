@@ -3,6 +3,9 @@ import { useLocation } from 'react-router-dom'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import SendIcon from '@mui/icons-material/Send'
 
 interface Comment {
   text: string
@@ -72,23 +75,37 @@ const Player: React.FC = () => {
           </video>
           {/* 下部に移動したコメント入力フォーム */}
           <div style={{ marginTop: '20px' }}>
-            <input
-              type="text"
-              value={currentComment}
-              onChange={(e) => setCurrentComment(e.target.value)}
-              placeholder="Add a comment"
-              style={{ width: '80%' }}
-            />
-            <button onClick={handleAddComment} style={{ marginLeft: '10px' }}>
-              Add Comment
-            </button>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <TextField
+                id="outlined-basic"
+                value={currentComment}
+                label="Please add a comment"
+                variant="outlined"
+                onChange={(e) => setCurrentComment(e.target.value)}
+                style={{ width: '70%' }}
+              />
+              <Button
+                variant="contained"
+                endIcon={<SendIcon />}
+                onClick={handleAddComment}
+                style={{ marginLeft: '10px' }}
+              >
+                Comment
+              </Button>
+            </Stack>
           </div>
         </Item>
         <Item>
           {/* 右側のコメントエリア */}
           <h1>Comments</h1>
           <div style={{ marginTop: '20px' }}>
-            <h2>Comments List</h2>
             <ul>
               {comments.map((comment, index) => (
                 <li key={index}>
