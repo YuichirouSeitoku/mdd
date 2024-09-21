@@ -37,7 +37,6 @@ jobs:
 
       # Lintの結果をPRにコメントする
       - name: Comment lint results on PR
-        if: env.exit_code != 0  # Lintでエラーが出た場合にのみコメントする
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |
