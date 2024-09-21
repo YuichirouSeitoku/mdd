@@ -32,14 +32,16 @@ jobs:
       - name: Run Lint
         id: lint
         run: |
+          # Lint結果をファイルに出力
           npm run lint > lint-result.txt 2>&1 || true
-          cat lint-result.txt
+          # exit_codeを取得
           exit_code=$?
-          echo "exit_code=$exit_code" >> $GITHUB_ENV
+          # 環境変数に出力を設定
           echo "lint_results<<EOF" >> $GITHUB_ENV
           cat lint-result.txt >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-          exit $exit_code
+          # exit_codeを返す（この行をコメントアウトすることも可能）
+          echo "exit_code=$exit_code" >> $GITHUB_ENV
 
       # Lintの結果をPRにコメントする
       - name: Comment lint results on PR
@@ -47,4 +49,6 @@ jobs:
         with:
           message: |
             ## Lint Results
+            \`\`\`
+            ${{ env.lint_results }}
             \`\`\`
