@@ -45,8 +45,8 @@ export class ShortcutWatcher {
     if (event.name == null || !this.requiredKeys.some((k) => isDown[k] === true)) return
 
     const currentKeys = Object.entries(isDown)
-      .filter(([_, v]) => v === true)
-      .map(([k, _]) => k)
+      .filter((o) => o[1] === true)
+      .map((o) => o[0])
     currentKeys.push(event.name)
 
     try {
