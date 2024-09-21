@@ -77,10 +77,10 @@ app.whenReady().then(() => {
 
   const mainWindow = createWindow()
 
-  ipcMain.handle('ipc-start-record', async (): Promise<boolean> => {
+  ipcMain.handle('ipc-start-record', async (_, projectName: string): Promise<boolean> => {
     const path = await selectDirectory(mainWindow)
     if (path == null) return false
-    console.log(`start record: ${path}`)
+    console.log(`start record: ${path}, ${projectName}`)
     return true
   })
   ipcMain.handle('ipc-stop-record', (): boolean => {

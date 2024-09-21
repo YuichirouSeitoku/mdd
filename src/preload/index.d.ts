@@ -8,7 +8,7 @@ declare global {
   }
 
   interface API {
-    startRecord: () => Promise<boolean>
+    startRecord: (projectName: string) => Promise<boolean>
     stopRecord: () => Promise<boolean>
   }
   interface FileSystemAPI {
