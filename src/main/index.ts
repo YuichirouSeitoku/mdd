@@ -112,11 +112,11 @@ app.on('window-all-closed', async () => {
 
 const subtitles: Subtitle[] = [
   { startTime: '0:00:01.00', endTime: '0:00:05.00', text: 'Hello, this is the first subtitle!' },
-  { startTime: '0:00:06.00', endTime: '0:00:10.00', text: 'And this is the second subtitle!' },
-];
+  { startTime: '0:00:06.00', endTime: '0:00:10.00', text: 'And this is the second subtitle!' }
+]
 
-const input_video_path = path.join(app.getAppPath(), 'resources', 'record.mp4');
-const output_video_path = path.join(app.getAppPath(), 'resources', 'subtitle_record.mp4');
+const input_video_path = path.join(app.getAppPath(), 'resources', 'record.mp4')
+const output_video_path = path.join(app.getAppPath(), 'resources', 'subtitle_record.mp4')
 
 // createSubtitleMovieを呼び出すタイミングは、他プログラムと結合するときに再度検討
 createSubtitleMovie(subtitles, input_video_path, output_video_path)
