@@ -1,6 +1,6 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import fs from 'fs'
+import { readFile } from 'fs/promises'
 
 // Custom APIs for renderer
 const api = {}
@@ -25,14 +25,6 @@ if (process.contextIsolated) {
 // ファイル読み込みをrendererで使う
 contextBridge.exposeInMainWorld('fileSystem', {
   readFile: (filePath: string) => {
-    return new Promise((resolve, reject) => {
-      fs.readFile(filePath, (err, data) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(data)
-        }
-      })
-    })
+    return readFile(filePath)
   }
 })
