@@ -1,0 +1,43 @@
+name: Lint Check
+
+on:
+  pull_request:
+    branches:
+      - main
+      - '**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      # リポジトリのクローン
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Node.jsのセットアップ
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # 必要なバージョンを指定
+
+      # npm installで依存関係をインストール
+      - name: Install dependencies
+        run: npm install
+
+      # Lintの実行
+      - name: Run Lint
+        id: lint
+        run: npm run lint
+        continue-on-error: true  # Lintエラーが発生してもCIを止めない
+
+      # Lintの結果をPRにコメントする
+      - name: Comment lint results on PR
+        if: failure()  # Lintでエラーが出た場合にのみコメントする
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: |
+            ## Lint Results
+            \`\`\`
+            ${{ steps.lint.outputs.stdout }}
+            \`\`\`
