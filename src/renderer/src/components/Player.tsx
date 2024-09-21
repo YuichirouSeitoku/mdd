@@ -6,6 +6,8 @@ import { styled } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import SendIcon from '@mui/icons-material/Send'
+import DeleteIcon from '@mui/icons-material/Delete'
+import IconButton from '@mui/material/IconButton'
 
 interface Comment {
   text: string
@@ -15,16 +17,16 @@ interface Comment {
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
   ...theme.typography.body2,
-  padding: theme.spacing(1),
+  padding: theme.spacing(2),
   textAlign: 'center',
   color: theme.palette.text.secondary,
-  ...theme.applyStyles('dark', {
-    backgroundColor: '#1A2027'
-  })
+  flex: 1, // 幅を持たせるためにflexを追加
+  maxWidth: '100%' // 最大幅を設定
 }))
 
 const Player: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null)
+  const commentsEndRef = useRef<HTMLDivElement | null>(null) // スクロール位置を管理するref
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
   const [currentComment, setCurrentComment] = useState<string>('')
@@ -64,13 +66,21 @@ const Player: React.FC = () => {
     setComments(updatedComments)
   }
 
+  // コメントが追加されるたびにスクロールする
+  useEffect(() => {
+    commentsEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [comments])
+
   return (
-    <div>
-      <Stack direction="row" spacing={2}>
+    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+      {/* 中央寄せのためのスタイル */}
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
         <Item>
           {/* 左側の動画エリア */}
           <h1>Video</h1>
-          <video ref={videoRef} width="600" controls>
+          <video ref={videoRef} width="100%" controls>
+            {' '}
+            {/* 幅を100%に設定 */}
             {videoUrl && <source src={videoUrl} type="video/mp4" />}
           </video>
           {/* 下部に移動したコメント入力フォーム */}
@@ -93,11 +103,11 @@ const Player: React.FC = () => {
               />
               <Button
                 variant="contained"
-                endIcon={<SendIcon />}
                 onClick={handleAddComment}
                 style={{ marginLeft: '10px' }}
+                size="large"
               >
-                Comment
+                <SendIcon />
               </Button>
             </Stack>
           </div>
@@ -105,17 +115,31 @@ const Player: React.FC = () => {
         <Item>
           {/* 右側のコメントエリア */}
           <h1>Comments</h1>
-          <div style={{ marginTop: '20px' }}>
+          <div
+            style={{
+              marginTop: '20px',
+              textAlign: 'left',
+              maxHeight: '280px',
+              overflowY: 'auto'
+            }}
+          >
             <ul>
               {comments.map((comment, index) => (
-                <li key={index}>
-                  <strong>{comment.time.toFixed(2)}s:</strong> {comment.text}
-                  <button onClick={() => handleDeleteComment(index)} style={{ marginLeft: '10px' }}>
-                    Delete
-                  </button>
+                <li key={index} style={{ marginBottom: '10px' }}>
+                  <strong>{comment.time.toFixed(2)}[秒]:</strong> {comment.text}
+                  <IconButton
+                    aria-label="delete"
+                    color="secondary"
+                    size="small"
+                    onClick={() => handleDeleteComment(index)}
+                    style={{ marginLeft: '10px' }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                 </li>
               ))}
             </ul>
+            <div ref={commentsEndRef} /> {/* スクロールのための空のdiv */}
           </div>
         </Item>
       </Stack>
