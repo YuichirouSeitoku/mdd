@@ -6,7 +6,7 @@ function Home(): JSX.Element {
 
   // WARN: 動画再生のテストのための処理であるため後で置き換える
   const [videoFilePath, setVideoFilePath] = useState<string | null>(null)
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const selectedFile = event.target.files?.[0]
     if (selectedFile) setVideoFilePath(selectedFile.path)
   }
