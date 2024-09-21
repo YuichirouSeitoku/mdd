@@ -1,6 +1,7 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { ShortcutWatcher } from './shortcut'
 import icon from '../../resources/icon.png?asset'
 
 function createWindow(): void {
@@ -35,6 +36,18 @@ function createWindow(): void {
   }
 }
 
+const SPECIAL_KEYS = Object.freeze([
+  'LEFT CTRL',
+  'LEFT SHIFT',
+  'LEFT ALT',
+  'LEFT META',
+  'RIGHT CTRL',
+  'RIGHT SHIFT',
+  'RIGHT META'
+])
+
+const watcher = new ShortcutWatcher(SPECIAL_KEYS, console.log)
+watcher.start()
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -65,6 +78,7 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
+  watcher.dispose()
   if (process.platform !== 'darwin') {
     app.quit()
   }
