@@ -1,17 +1,14 @@
 import fs from 'fs';
 import ffmpeg from 'fluent-ffmpeg';
 
-interface Subtitles {
+// TODO: 型定義は適切なファイルで宣言
+export type Subtitle = {
     startTime: string,
     endTime: string,
     text: string
 }
 
-// TODO: 環境変数から読み込む
-const INPUT_VIDEO_PATH = 'input_video.mp4';
-const OUTPUT_VIDEO_PATH = 'output.mp4';
-
-export const createSubtitleMovie = (subtitles: Subtitles[], input_video_path=INPUT_VIDEO_PATH, output_video_path=OUTPUT_VIDEO_PATH) => {
+export async function createSubtitleMovie(subtitles: Subtitle[], input_video_path, output_video_path) {
 
     // ASSファイルのヘッダー情報
     const assHeader = `
@@ -37,16 +34,17 @@ export const createSubtitleMovie = (subtitles: Subtitles[], input_video_path=INP
 
     // ASSファイルを保存
     const assFilename = 'output.ass';
-    fs.writeFileSync(assFilename, assContent, 'utf8');
+    await fs.writeFileSync(assFilename, assContent, 'utf8');
 
     // fluent-ffmpegでASSファイルと動画を結合
-    ffmpeg(input_video_path)
+    console.log(input_video_path)
+    await ffmpeg(input_video_path)
     .outputOptions('-vf', `ass=${assFilename}`) // 字幕フィルターを使ってASS字幕を追加
     .save(output_video_path) // 出力する動画ファイル
     .on('end', () => {
-        console.log('字幕付き動画が正常に生成されました');
+        console.log('success: create movie');
     })
     .on('error', (err) => {
-        console.error('エラーが発生しました: ', err);
+        console.error('failed create movie: ', err);
     });
 }
