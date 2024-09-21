@@ -72,19 +72,18 @@ const Player: React.FC = () => {
   }, [comments])
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', margin: '0 auto' }}>
       {/* 中央寄せのためのスタイル */}
       <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
         <Item>
           {/* 左側の動画エリア */}
-          <h1>Video</h1>
           <video ref={videoRef} width="100%" controls>
             {' '}
             {/* 幅を100%に設定 */}
             {videoUrl && <source src={videoUrl} type="video/mp4" />}
           </video>
           {/* 下部に移動したコメント入力フォーム */}
-          <div style={{ marginTop: '20px' }}>
+          <div style={{ marginTop: '10px' }}>
             <Stack
               direction="row"
               spacing={2}
@@ -99,7 +98,7 @@ const Player: React.FC = () => {
                 label="Please add a comment"
                 variant="outlined"
                 onChange={(e) => setCurrentComment(e.target.value)}
-                style={{ width: '70%' }}
+                style={{ width: '80%' }}
               />
               <Button
                 variant="contained"
