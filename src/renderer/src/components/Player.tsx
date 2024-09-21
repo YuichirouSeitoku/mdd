@@ -6,7 +6,7 @@ interface Comment {
   time: number
 }
 
-const Sample: React.FC = () => {
+const Player: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
@@ -87,4 +87,4 @@ const Sample: React.FC = () => {
   )
 }
 
-export default Sample
+export default Player

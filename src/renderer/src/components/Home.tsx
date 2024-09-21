@@ -12,7 +12,7 @@ function Home(): JSX.Element {
   }
   const handleClick = (): void => {
     const encodedFilePath = videoFilePath ? encodeURIComponent(videoFilePath) : null
-    navigate(`/sample?video=${encodedFilePath}`)
+    navigate(`/player?video=${encodedFilePath}`)
   }
 
   return (
