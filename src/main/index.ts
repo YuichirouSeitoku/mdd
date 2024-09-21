@@ -15,7 +15,8 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      nodeIntegration: true // FIXME: RendererからもNodeを使えるためXSSの危険性あり
     }
   })
 
@@ -27,6 +28,11 @@ function createWindow(): void {
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
+
+  // NOTE: dev環境では開発者ツールを開く
+  if (is.dev) {
+    mainWindow.webContents.openDevTools()
+  }
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
