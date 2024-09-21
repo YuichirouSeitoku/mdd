@@ -14,7 +14,7 @@ const Sample: React.FC = () => {
 
   // クエリパラメータを取得
   const query = new URLSearchParams(useLocation().search)
-  const videoFilePath = query.get('video') // 動画のファイルパス
+  const videoFilePath = query.get('video') // FIXME: テスト用に用意した動画のパスを渡すためのパラメータ
   // TODO: まだ使用しないキー入力のデータ
   // const keysFilePath = query.get('keys')
 
