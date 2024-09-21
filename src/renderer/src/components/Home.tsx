@@ -15,6 +15,13 @@ function Home(): JSX.Element {
     navigate(`/player?video=${encodedFilePath}`)
   }
 
+  const startRecord = (): void => {
+    window.api.startRecord()
+  }
+  const stopRecord = (): void => {
+    window.api.stopRecord()
+  }
+
   return (
     <div>
       <h1>ホーム画面</h1>

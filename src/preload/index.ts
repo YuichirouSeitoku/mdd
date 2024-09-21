@@ -1,9 +1,12 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { readFile } from 'fs/promises'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  startRecord: (): Promise<boolean> => ipcRenderer.invoke('ipc-start-record'),
+  stopRecord: (): Promise<boolean> => ipcRenderer.invoke('ipc-stop-record')
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

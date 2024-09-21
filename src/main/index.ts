@@ -72,6 +72,14 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+  ipcMain.handle('ipc-start-record', (): boolean => {
+    console.log('start record')
+    return true
+  })
+  ipcMain.handle('ipc-stop-record', (): boolean => {
+    console.log('stop record')
+    return true
+  })
 
   createWindow()
 
