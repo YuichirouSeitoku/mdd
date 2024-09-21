@@ -28,8 +28,8 @@ export function registerRecorder(watcher: ShortcutWatcher, window: BrowserWindow
     return true
   }
 
-  const stopRecord = async (): Promise<boolean> => {
-    if (isRecording === false || project == null) return false
+  const stopRecord = async (): Promise<string | null> => {
+    if (isRecording === false || project == null) return null
     console.log('stop record')
     watcher.dispose()
     const now = microtime.now()
@@ -45,7 +45,7 @@ export function registerRecorder(watcher: ShortcutWatcher, window: BrowserWindow
     )
     shortcutEvents = []
     isRecording = false
-    return true
+    return outputPath
   }
 
   ipcMain.handle('ipc-start-record', startRecord)
