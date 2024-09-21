@@ -8,11 +8,7 @@ import Button from '@mui/material/Button'
 import SendIcon from '@mui/icons-material/Send'
 import DeleteIcon from '@mui/icons-material/Delete'
 import IconButton from '@mui/material/IconButton'
-
-interface Comment {
-  text: string
-  time: number
-}
+import type { Comment } from '../../../types'
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#e1f5fe',
