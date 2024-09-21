@@ -48,36 +48,40 @@ const Player: React.FC = () => {
   }
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', flexDirection: 'row' }}>
       {/* 左側の動画エリア */}
       <div style={{ flex: 1 }}>
         <h1>Video</h1>
         <video ref={videoRef} width="600" controls>
           {videoUrl && <source src={videoUrl} type="video/mp4" />}
         </video>
-      </div>
-
-      {/* 右側のコメントエリア */}
-      <div style={{ flex: 1, marginLeft: '20px' }}>
-        <h1>Comments</h1>
-
-        <div>
+        {/* 下部に移動したコメント入力フォーム */}
+        <div style={{ marginTop: '20px' }}>
           <input
             type="text"
             value={currentComment}
             onChange={(e) => setCurrentComment(e.target.value)}
             placeholder="Add a comment"
+            style={{ width: '80%' }}
           />
-          <button onClick={handleAddComment}>Add Comment</button>
+          <button onClick={handleAddComment} style={{ marginLeft: '10px' }}>
+            Add Comment
+          </button>
         </div>
+      </div>
 
+      {/* 右側のコメントエリア */}
+      <div style={{ flex: 1, marginLeft: '20px' }}>
+        <h1>Comments</h1>
         <div style={{ marginTop: '20px' }}>
           <h2>Comments List</h2>
           <ul>
             {comments.map((comment, index) => (
               <li key={index}>
                 <strong>{comment.time.toFixed(2)}s:</strong> {comment.text}
-                <button onClick={() => handleDeleteComment(index)}>Delete</button>
+                <button onClick={() => handleDeleteComment(index)} style={{ marginLeft: '10px' }}>
+                  Delete
+                </button>
               </li>
             ))}
           </ul>
