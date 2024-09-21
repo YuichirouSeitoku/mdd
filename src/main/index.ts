@@ -5,9 +5,9 @@ import { writeFile } from 'fs/promises'
 import { ShortcutWatcher, ShortcutEvent } from './shortcut'
 import icon from '../../resources/icon.png?asset'
 import path from 'path'
-
 import { createSubtitleMovie } from './subtitleMovie'
 import type { Subtitle } from './subtitleMovie'
+import { makeExplanations } from './explanations'
 
 function createWindow(): void {
   // Create the browser window.
@@ -76,6 +76,9 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+
+  // 解説作成ハンドラ
+  ipcMain.handle('make-explanations', makeExplanations)
 
   createWindow()
 
