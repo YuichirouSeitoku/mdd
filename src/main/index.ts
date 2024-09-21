@@ -53,7 +53,7 @@ const SPECIAL_KEYS = Object.freeze([
   'RIGHT META'
 ])
 
-const shortcutEvents: ShortcutEvent[] = []
+let shortcutEvents: ShortcutEvent[] = []
 const watcher = new ShortcutWatcher(SPECIAL_KEYS, (e) => shortcutEvents.push(e))
 watcher.start()
 // This method will be called when Electron has finished
@@ -96,6 +96,7 @@ app.on('window-all-closed', async () => {
     './foo.mddproject',
     JSON.stringify({ format: 'v1', video: { path: './a.mp4' }, shortcutEvents: shortcutEvents })
   )
+  shortcutEvents = []
   if (process.platform !== 'darwin') {
     app.quit()
   }
