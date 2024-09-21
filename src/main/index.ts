@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { writeFile } from 'fs/promises'
 import { ShortcutWatcher, ShortcutEvent } from './shortcut'
 import { selectDirectory } from './view/selectDirectory'
+import { ScreenRecorder } from './screenRecord'
 import icon from '../../resources/icon.png?asset'
 
 function createWindow(): BrowserWindow {
@@ -81,6 +82,8 @@ app.whenReady().then(() => {
     const path = await selectDirectory(mainWindow)
     if (path == null) return false
     console.log(`start record: ${path}, ${projectName}`)
+    const recorder = new ScreenRecorder()
+    recorder.start()
     return true
   })
   ipcMain.handle('ipc-stop-record', (): boolean => {
