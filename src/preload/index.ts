@@ -4,7 +4,11 @@ import { readFile } from 'fs/promises'
 import type { Comment } from '../types'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  startRecord: (projectName: string): Promise<boolean> =>
+    ipcRenderer.invoke('ipc-start-record', projectName),
+  stopRecord: (): Promise<boolean> => ipcRenderer.invoke('ipc-stop-record')
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

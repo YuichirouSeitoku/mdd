@@ -5,11 +5,15 @@ import { Comment } from '../types'
 declare global {
   interface Window {
     electron: ElectronAPI
-    api: unknown
+    api: API
     fileSystem: FileSystemAPI
     explanation: ExplanationAPI
   }
 
+  interface API {
+    startRecord: (projectName: string) => Promise<boolean>
+    stopRecord: () => Promise<boolean>
+  }
   interface FileSystemAPI {
     readFile: (filePath: string) => Promise<Buffer>
   }

@@ -13,18 +13,19 @@ export type OnShortcutHandler = (event: ShortcutEvent) => void
 
 export class ShortcutWatcher {
   listener: GlobalKeyboardListener | null
-  onShortcutHandler: OnShortcutHandler
+  onShortcutHandler: OnShortcutHandler | null
   requiredKeys: Readonly<string[]>
   previousEventAt: number | null
-  constructor(requiredKeys: Readonly<string[]>, onShortcutHandler: OnShortcutHandler) {
+  constructor(requiredKeys: Readonly<string[]>) {
     this.requiredKeys = requiredKeys
-    this.onShortcutHandler = onShortcutHandler
+    this.onShortcutHandler = null
     this.previousEventAt = null
     this.listener = null
   }
 
-  start(): void {
+  start(onShortcutHandler: OnShortcutHandler): void {
     this.listener = new GlobalKeyboardListener()
+    this.onShortcutHandler = onShortcutHandler
     this.listener.addListener(this.handler.bind(this))
     this.previousEventAt = null
   }
@@ -33,6 +34,7 @@ export class ShortcutWatcher {
     if (this.listener == null) return
     this.listener.kill()
     this.listener = null
+    this.onShortcutHandler = null
     this.previousEventAt = null
   }
 
@@ -54,6 +56,7 @@ export class ShortcutWatcher {
     currentKeys.push(event.name)
 
     try {
+      if (this.onShortcutHandler == null) return
       this.onShortcutHandler({ keys: currentKeys, eventAt: this.previousEventAt })
     } finally {
       // 以降の一連のUPイベントをSKIPさせる
