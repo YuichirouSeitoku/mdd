@@ -5,7 +5,11 @@ import {
 } from 'node-global-key-listener'
 import microtime from 'microtime'
 
-export type OnShortcutHandler = (keys: string[], eventAt: number) => void
+export type ShortcutEvent = {
+  keys: string[]
+  eventAt: number
+}
+export type OnShortcutHandler = (event: ShortcutEvent) => void
 
 export class ShortcutWatcher {
   listener: GlobalKeyboardListener | null
@@ -50,7 +54,7 @@ export class ShortcutWatcher {
     currentKeys.push(event.name)
 
     try {
-      this.onShortcutHandler(currentKeys, this.previousEventAt)
+      this.onShortcutHandler({ keys: currentKeys, eventAt: this.previousEventAt })
     } finally {
       // 以降の一連のUPイベントをSKIPさせる
       this.previousEventAt = null
