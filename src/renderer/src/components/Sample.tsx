@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 
 interface Comment {
   text: string
@@ -7,8 +8,30 @@ interface Comment {
 
 const Sample: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null)
+  const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
   const [currentComment, setCurrentComment] = useState<string>('')
+
+  // クエリパラメータを取得
+  const query = new URLSearchParams(useLocation().search)
+  const videoFilePath = query.get('video') // 動画のファイルパス
+  // TODO: まだ使用しないキー入力のデータ
+  // const keysFilePath = query.get('keys')
+
+  // ページ読み込み時にクエリパラメータから動画をセットする
+  useEffect(() => {
+    if (!videoFilePath) return
+    window.fileSystem
+      .readFile(videoFilePath)
+      .then((data: Buffer) => {
+        const blob = new Blob([data], { type: 'video/mp4' })
+        const url = URL.createObjectURL(blob)
+        setVideoUrl(url)
+      })
+      .catch((err: Error) => {
+        console.error('ファイル読み込みエラー', err)
+      })
+  }, [])
 
   // コメントを追加
   const handleAddComment = (): void => {
@@ -30,8 +53,7 @@ const Sample: React.FC = () => {
       <div style={{ flex: 1 }}>
         <h1>Video</h1>
         <video ref={videoRef} width="600" controls>
-          <source src="path_to_your_video.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
+          {videoUrl && <source src={videoUrl} type="video/mp4" />}
         </video>
       </div>
 
