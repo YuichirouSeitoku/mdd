@@ -5,6 +5,7 @@ function Home(): JSX.Element {
   const navigate = useNavigate()
 
   const [projectName, setProjectName] = useState<string>('')
+  const [keyeventPath, setKeyeventPath] = useState<string | null>(null)
   const [recording, setRecording] = useState<boolean>(false)
   // WARN: 動画再生のテストのための処理であるため後で置き換える
   const [videoFilePath, setVideoFilePath] = useState<string | null>(null)
@@ -14,7 +15,8 @@ function Home(): JSX.Element {
   }
   const handleClick = (): void => {
     const encodedFilePath = videoFilePath ? encodeURIComponent(videoFilePath) : null
-    navigate(`/player?video=${encodedFilePath}`)
+    const encodedKeyeventPath = keyeventPath ? encodeURIComponent(keyeventPath) : null
+    navigate(`/player?video=${encodedFilePath}&keyevent=${encodedKeyeventPath}`)
   }
 
   const startRecord = (): void => {
@@ -24,7 +26,8 @@ function Home(): JSX.Element {
   }
   const stopRecord = async (): Promise<void> => {
     if (!recording) return
-    await window.api.stopRecord()
+    const outputPath = await window.api.stopRecord()
+    if (outputPath) setKeyeventPath(outputPath)
     setRecording(false)
   }
 

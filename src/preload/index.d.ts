@@ -12,7 +12,7 @@ declare global {
 
   interface API {
     startRecord: (projectName: string) => Promise<boolean>
-    stopRecord: () => Promise<boolean>
+    stopRecord: () => Promise<string | null>
   }
   interface FileSystemAPI {
     readFile: (filePath: string) => Promise<Buffer>

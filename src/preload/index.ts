@@ -7,7 +7,7 @@ import type { Comment } from '../types'
 const api = {
   startRecord: (projectName: string): Promise<boolean> =>
     ipcRenderer.invoke('ipc-start-record', projectName),
-  stopRecord: (): Promise<boolean> => ipcRenderer.invoke('ipc-stop-record')
+  stopRecord: (): Promise<string | null> => ipcRenderer.invoke('ipc-stop-record')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

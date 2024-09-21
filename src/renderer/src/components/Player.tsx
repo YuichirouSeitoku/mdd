@@ -10,9 +10,8 @@ const Player: React.FC = () => {
 
   // クエリパラメータを取得
   const query = new URLSearchParams(useLocation().search)
-  const videoFilePath = query.get('video') // FIXME: テスト用に用意した動画のパスを渡すためのパラメータ
-  // TODO: まだ使用しないキー入力のデータ
-  // const keysFilePath = query.get('keys')
+  const videoFilePath = query.get('video')
+  // const keyeventFilePath = query.get('keyevent')
 
   // ページ読み込み時にクエリパラメータから動画をセットする
   useEffect(() => {
