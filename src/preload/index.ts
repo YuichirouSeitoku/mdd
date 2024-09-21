@@ -4,7 +4,7 @@ import { readFile } from 'fs/promises'
 
 // Custom APIs for renderer
 const api = {
-  startRecord: (): Promise<boolean> => ipcRenderer.invoke('ipc-start-record'),
+  startRecord: (projectName: string): Promise<boolean> => ipcRenderer.invoke('ipc-start-record', projectName),
   stopRecord: (): Promise<boolean> => ipcRenderer.invoke('ipc-stop-record')
 }
 

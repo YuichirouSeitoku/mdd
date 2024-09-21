@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 function Home(): JSX.Element {
   const navigate = useNavigate()
 
+  const [projectName, setProjectName] = useState<string>('')
   // WARN: 動画再生のテストのための処理であるため後で置き換える
   const [videoFilePath, setVideoFilePath] = useState<string | null>(null)
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -16,7 +17,7 @@ function Home(): JSX.Element {
   }
 
   const startRecord = (): void => {
-    window.api.startRecord()
+    window.api.startRecord(projectName)
   }
   const stopRecord = (): void => {
     window.api.stopRecord()
@@ -27,6 +28,7 @@ function Home(): JSX.Element {
       <h1>ホーム画面</h1>
       <section>
         <h2>キャプチャ</h2>
+        <input type="text" onChange={(e) => setProjectName(e.target.value)} />
         <button onClick={startRecord}>録画開始</button>
         <button onClick={stopRecord}>録画終了</button>
       </section>
