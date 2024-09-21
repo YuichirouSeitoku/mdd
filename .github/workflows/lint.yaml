@@ -28,16 +28,20 @@ jobs:
       # Lintの実行
       - name: Run Lint
         id: lint
-        run: npm run lint
-        continue-on-error: true  # Lintエラーが発生してもCIを止めない
+        run: |
+          npm run lint > lint-result.txt 2>&1 || true
+          cat lint-result.txt
+          exit_code=$?
+          echo "exit_code=$exit_code" >> $GITHUB_ENV
+          exit $exit_code
 
       # Lintの結果をPRにコメントする
       - name: Comment lint results on PR
-        if: failure()  # Lintでエラーが出た場合にのみコメントする
+        if: env.exit_code != 0  # Lintでエラーが出た場合にのみコメントする
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |
             ## Lint Results
             \`\`\`
-            ${{ steps.lint.outputs.stdout }}
+            $(cat lint-result.txt)
             \`\`\`
