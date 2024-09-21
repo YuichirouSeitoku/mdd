@@ -12,11 +12,10 @@ const Sample: React.FC = () => {
 
   // コメントを追加
   const handleAddComment = (): void => {
-    if (videoRef.current) {
-      const videoTime = videoRef.current.currentTime
-      setComments([...comments, { text: currentComment, time: videoTime }])
-      setCurrentComment('')
-    }
+    if (!videoRef.current) return
+    const videoTime = videoRef.current.currentTime
+    setComments([...comments, { text: currentComment, time: videoTime }])
+    setCurrentComment('')
   }
 
   // コメントを削除
