@@ -25,6 +25,11 @@ function Home(): JSX.Element {
   return (
     <div>
       <h1>ホーム画面</h1>
+      <section>
+        <h2>キャプチャ</h2>
+        <button onClick={startRecord}>録画開始</button>
+        <button onClick={stopRecord}>録画終了</button>
+      </section>
       <div>
         <h3>動画再生テスト用ファイルのアップロード</h3>
         <h5>ここで選択したファイルが動画再生画面で再生されます</h5>
