@@ -3,9 +3,10 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { writeFile } from 'fs/promises'
 import { ShortcutWatcher, ShortcutEvent } from './shortcut'
+import { selectDirectory } from './view/selectDirectory'
 import icon from '../../resources/icon.png?asset'
 
-function createWindow(): void {
+function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
@@ -41,6 +42,7 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+  return mainWindow
 }
 
 const SPECIAL_KEYS = Object.freeze([
@@ -72,16 +74,19 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
-  ipcMain.handle('ipc-start-record', (): boolean => {
-    console.log('start record')
+
+  const mainWindow = createWindow()
+
+  ipcMain.handle('ipc-start-record', async (): Promise<boolean> => {
+    const path = await selectDirectory(mainWindow)
+    if (path == null) return false
+    console.log(`start record: ${path}`)
     return true
   })
   ipcMain.handle('ipc-stop-record', (): boolean => {
     console.log('stop record')
     return true
   })
-
-  createWindow()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
