@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { readFile } from 'fs/promises'
-import type { Comment, Explanation } from '../types'
+import type { Comment } from '../types'
 
 // Custom APIs for renderer
 const api = {}
