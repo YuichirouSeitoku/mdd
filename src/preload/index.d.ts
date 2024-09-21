@@ -1,5 +1,6 @@
 import { IpcRendererEvent } from 'electron'
 import { ElectronAPI } from '@electron-toolkit/preload'
+import { Comment } from '../types'
 
 declare global {
   interface Window {
