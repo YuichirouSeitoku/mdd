@@ -1,29 +1,29 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react'
 
 interface Comment {
-  text: string;
-  time: number;
+  text: string
+  time: number
 }
 
 const Sample: React.FC = () => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [currentComment, setCurrentComment] = useState<string>('');
+  const videoRef = useRef<HTMLVideoElement | null>(null)
+  const [comments, setComments] = useState<Comment[]>([])
+  const [currentComment, setCurrentComment] = useState<string>('')
 
   // コメントを追加
-  const handleAddComment = () => {
+  const handleAddComment = (): void => {
     if (videoRef.current) {
-      const videoTime = videoRef.current.currentTime;
-      setComments([...comments, { text: currentComment, time: videoTime }]);
-      setCurrentComment('');
+      const videoTime = videoRef.current.currentTime
+      setComments([...comments, { text: currentComment, time: videoTime }])
+      setCurrentComment('')
     }
-  };
+  }
 
   // コメントを削除
-  const handleDeleteComment = (index: number) => {
-    const updatedComments = comments.filter((_, i) => i !== index);
-    setComments(updatedComments);
-  };
+  const handleDeleteComment = (index: number): void => {
+    const updatedComments = comments.filter((_, i) => i !== index)
+    setComments(updatedComments)
+  }
 
   return (
     <div style={{ display: 'flex' }}>
@@ -63,9 +63,7 @@ const Sample: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Sample;
-
-
+export default Sample
