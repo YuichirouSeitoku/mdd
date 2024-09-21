@@ -15,13 +15,20 @@ interface Comment {
 }
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: '#fff',
+  backgroundColor: '#e1f5fe',
   ...theme.typography.body2,
   padding: theme.spacing(2),
   textAlign: 'center',
   color: theme.palette.text.secondary,
-  flex: 1, // 幅を持たせるためにflexを追加
-  maxWidth: '100%' // 最大幅を設定
+  flex: 1,
+  maxWidth: '100%',
+  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // 影を追加
+  borderRadius: '10px', // 角を丸くする
+  transition: '0.3s', // ホバー時のアニメーション
+  '&:hover': {
+    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)', // ホバー時の影を強くする
+    transform: 'scale(1.02)' // ホバー時に拡大
+  }
 }))
 
 const Player: React.FC = () => {
@@ -33,9 +40,7 @@ const Player: React.FC = () => {
 
   // クエリパラメータを取得
   const query = new URLSearchParams(useLocation().search)
-  const videoFilePath = query.get('video') // FIXME: テスト用に用意した動画のパスを渡すためのパラメータ
-  // TODO: まだ使用しないキー入力のデータ
-  // const keysFilePath = query.get('keys')
+  const videoFilePath = query.get('video') // 動画のパスを取得
 
   // ページ読み込み時にクエリパラメータから動画をセットする
   useEffect(() => {
@@ -72,17 +77,20 @@ const Player: React.FC = () => {
   }, [comments])
 
   return (
-    <div style={{ padding: '20px', margin: '0 auto' }}>
-      {/* 中央寄せのためのスタイル */}
+    <body
+      style={{
+        padding: '20px',
+        margin: '0 auto',
+        background: 'linear-gradient(to bottom right, #4fc3f7, #e1f5fe)',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // 影を追加
+        minHeight: '100vh'
+      }}
+    >
       <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
         <Item>
-          {/* 左側の動画エリア */}
           <video ref={videoRef} width="100%" controls>
-            {' '}
-            {/* 幅を100%に設定 */}
             {videoUrl && <source src={videoUrl} type="video/mp4" />}
           </video>
-          {/* 下部に移動したコメント入力フォーム */}
           <div style={{ marginTop: '10px' }}>
             <Stack
               direction="row"
@@ -95,7 +103,7 @@ const Player: React.FC = () => {
               <TextField
                 id="outlined-basic"
                 value={currentComment}
-                label="Please add a comment"
+                label="コメントを追加"
                 variant="outlined"
                 onChange={(e) => setCurrentComment(e.target.value)}
                 style={{ width: '80%' }}
@@ -112,8 +120,7 @@ const Player: React.FC = () => {
           </div>
         </Item>
         <Item>
-          {/* 右側のコメントエリア */}
-          <h1>Comments</h1>
+          <h1>コメント一覧</h1>
           <div
             style={{
               marginTop: '20px',
@@ -125,10 +132,9 @@ const Player: React.FC = () => {
             <ul>
               {comments.map((comment, index) => (
                 <li key={index} style={{ marginBottom: '10px' }}>
-                  <strong>{comment.time.toFixed(2)}[秒]:</strong> {comment.text}
+                  <strong>{comment.time.toFixed(2)}秒:</strong> {comment.text}
                   <IconButton
-                    aria-label="delete"
-                    color="secondary"
+                    aria-label="削除"
                     size="small"
                     onClick={() => handleDeleteComment(index)}
                     style={{ marginLeft: '10px' }}
@@ -142,7 +148,7 @@ const Player: React.FC = () => {
           </div>
         </Item>
       </Stack>
-    </div>
+    </body>
   )
 }
 
