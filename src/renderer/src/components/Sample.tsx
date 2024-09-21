@@ -6,4 +6,4 @@ function Sample() {
   );
 }
 
-export default Sample;
+export default Sample

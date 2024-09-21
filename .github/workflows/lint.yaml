@@ -49,6 +49,4 @@ jobs:
         with:
           message: |
             ## Lint Results
-            \`\`\`
             ${{ env.lint_results }}
-            \`\`\`
