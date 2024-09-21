@@ -1,10 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-
-interface Comment {
-  text: string
-  time: number
-}
+import type { Comment } from '../../../types'
 
 const Player: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null)
