@@ -58,36 +58,3 @@ jobs:
           name: macos-build
           path: ./dist # 成果物が出力されるディレクトリを指定
           retention-days: 2 #2日間保持
-
-  merge-results:
-    name: Merge Build Artifacts
-    runs-on: ubuntu-latest
-    needs: [build-windows, build-macos]
-    steps:
-      - name: Download Windows artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: windows-build
-          path: ./windows-build
-
-      - name: Download macOS artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: macos-build
-          path: ./macos-build
-
-      - name: Create merged output directory
-        run: mkdir merged-build
-
-      - name: Copy Windows build artifacts to merged directory
-        run: cp -r ./windows-build/* ./merged-build/
-
-      - name: Copy macOS build artifacts to merged directory
-        run: cp -r ./macos-build/* ./merged-build/
-
-      - name: Upload merged build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: merged-build
-          path: ./merged-build
-          retention-days: 2 #2日間保持
