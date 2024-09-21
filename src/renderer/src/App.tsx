@@ -1,7 +1,7 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './components/Home';
-import Sample from './components/Sample';
+import React from 'react'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import Home from './components/Home'
+import Sample from './components/Sample'
 
 function App(): JSX.Element {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
@@ -13,7 +13,7 @@ function App(): JSX.Element {
         <Route path="/sample" element={<Sample />} />
       </Routes>
     </Router>
-  );
+  )
 }
 
 export default App

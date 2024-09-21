@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 
-function Sample() {
+function Sample(): JSX.Element {
   return (
     <div>
       <h1>Sample画面</h1>
     </div>
-  );
+  )
 }
 
-export default Sample;
+export default Sample
