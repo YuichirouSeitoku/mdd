@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { readFile } from 'fs/promises'
-import type { Comment } from '../types'
+import type { Comment, Explanation } from '../types'
 
 // Custom APIs for renderer
 const api = {
@@ -38,5 +38,12 @@ contextBridge.exposeInMainWorld('fileSystem', {
 contextBridge.exposeInMainWorld('explanation', {
   makeExplanations: (videoPath: string, mddprojectFilePath: string, comments: Comment[]) => {
     ipcRenderer.invoke('make-explanations', videoPath, mddprojectFilePath, comments)
+  }
+})
+
+// 動画の作成
+contextBridge.exposeInMainWorld('video', {
+  renderVideo: (videoPath: string, mddprojectFilePath: string, explanations: Explanation[]) => {
+    ipcRenderer.invoke('render-video', videoPath, mddprojectFilePath, explanations)
   }
 })

@@ -10,9 +10,11 @@ export type Subtitle = {
 
 export async function createSubtitleMovie(
   subtitles: Subtitle[],
-  input_video_path,
-  output_video_path
+  input_video_path: string,
+  output_video_path: string,
+  location: 'LowerMiddle' | 'UpperLeft' = 'LowerMiddle'
 ): Promise<void> {
+  const align = location == 'LowerMiddle' ? 2 : 7
   // ASSファイルのヘッダー情報
   const assHeader = `
     [Script Info]
@@ -21,7 +23,7 @@ export async function createSubtitleMovie(
 
     [V4 Styles]
     Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-    Style: Default,Arial,20,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,-1,0,1,1.5,0,2,10,10,10,1
+    Style: Default,Arial,20,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,-1,0,1,1.5,0,${align},10,10,10,1
 
     [Events]
     Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

@@ -19,7 +19,7 @@ export const makeExplanations = async (
   console.log(event)
 
   // ファイル読み込み
-  const shortcutEvents = await loadProjectFile(mddprojectFilePath)
+  const [shortcutEvents, startAt] = await loadProjectFile(mddprojectFilePath)
 
   // ビデオデータを画像に分割して一時ディレクトリに保存
   const frameInterval = 10 //  FIXME: 仮決め
@@ -30,7 +30,7 @@ export const makeExplanations = async (
   const sortedFiles = files.sort()
 
   // 解説生成
-  const startTime = 0 // FIXME: テスト用の開始時刻を設定 (秒に合わせる)
+  const startTime = startAt / 1000000
   const fps = await calcFPS(videoPath)
   const explanations: Explanation[] = []
   const createExplanation = (comment: Comment): void => {
@@ -51,14 +51,16 @@ export const makeExplanations = async (
   return explanations
 }
 
-const loadProjectFile = async (mddprojectFilePath: string): Promise<ShortcutEvent[]> => {
+export const loadProjectFile = async (
+  mddprojectFilePath: string
+): Promise<[ShortcutEvent[], number]> => {
   const data = await readFile(mddprojectFilePath, 'utf8')
   const jsonData = JSON.parse(data)
 
   // データ読み込み
   const shortcutEvents: ShortcutEvent[] = jsonData['shortcutEvents']
 
-  return shortcutEvents
+  return [shortcutEvents, jsonData['shortcut']['startAt']]
 }
 
 const calcFPS = async (videoPath: string): Promise<number> => {
