@@ -36,7 +36,7 @@ export const renderVideo = async (
   }
   console.log(keySubtitles)
   const tmpOutputPath = join(tmpDir, 'tmpOutputPath.mp4')
-  createSubtitleMovie(keySubtitles, videoPath, tmpOutputPath, 'UpperLeft')
+  await createSubtitleMovie(keySubtitles, videoPath, tmpOutputPath, 'UpperLeft')
 
   // 解説のレンダリング
   const explanationSubtitles: Subtitle[] = []
@@ -52,7 +52,7 @@ export const renderVideo = async (
   }
   console.log(explanationSubtitles)
   const outputPath = join(tmpDir, 'output.mp4')
-  createSubtitleMovie(explanationSubtitles, tmpOutputPath, outputPath, 'LowerMiddle')
+  await createSubtitleMovie(explanationSubtitles, tmpOutputPath, outputPath, 'LowerMiddle')
 
   const video = await readFile(outputPath)
   const blob = new Blob([video], { type: 'video/mp4' })
