@@ -1,9 +1,40 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import type { Comment, Explanation } from '../../../types'
+import Paper from '@mui/material/Paper'
+import Stack from '@mui/material/Stack'
+import { styled } from '@mui/material/styles'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import SendIcon from '@mui/icons-material/Send'
+import DeleteIcon from '@mui/icons-material/Delete'
+import IconButton from '@mui/material/IconButton'
+
+interface Comment {
+  text: string
+  time: number
+}
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: '#e1f5fe',
+  ...theme.typography.body2,
+  padding: theme.spacing(2),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+  flex: 1,
+  maxWidth: '100%',
+  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // 影を追加
+  borderRadius: '10px', // 角を丸くする
+  transition: '0.3s', // ホバー時のアニメーション
+  '&:hover': {
+    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)', // ホバー時の影を強くする
+    transform: 'scale(1.02)' // ホバー時に拡大
+  }
+}))
 
 const Player: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null)
+  const commentsEndRef = useRef<HTMLDivElement | null>(null) // スクロール位置を管理するref
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
   const [currentComment, setCurrentComment] = useState<string>('')
@@ -66,46 +97,87 @@ const Player: React.FC = () => {
     setComments(updatedComments)
   }
 
+  // コメントが追加されるたびにスクロールする
+  useEffect(() => {
+    commentsEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [comments])
+
   return (
-    <div style={{ display: 'flex' }}>
-      {/* 左側の動画エリア */}
-      <div style={{ flex: 1 }}>
-        <h1>Video</h1>
-        <video ref={videoRef} width="600" controls>
-          {videoUrl && <source src={videoUrl} type="video/mp4" />}
-        </video>
-      </div>
-
-      {/* 右側のコメントエリア */}
-      <div style={{ flex: 1, marginLeft: '20px' }}>
-        <h1>Comments</h1>
-
-        <div>
-          <input
-            type="text"
-            value={currentComment}
-            onChange={(e) => setCurrentComment(e.target.value)}
-            placeholder="Add a comment"
-          />
-          <button onClick={handleAddComment}>Add Comment</button>
-        </div>
-
-        <div style={{ marginTop: '20px' }}>
-          <h2>Comments List</h2>
-          <ul>
-            {comments.map((comment, index) => (
-              <li key={index}>
-                <strong>{comment.time.toFixed(2)}s:</strong> {comment.text}
-                <button onClick={() => handleDeleteComment(index)}>Delete</button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      <button onClick={handleMakeExplanation}>
-        {isMovieRendering ? '動画を作成中です...' : 'AIの解説付き動画を作成'}
-      </button>
-    </div>
+    <body
+      style={{
+        padding: '20px',
+        margin: '0 auto',
+        background: 'linear-gradient(to bottom right, #4fc3f7, #e1f5fe)',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // 影を追加
+        minHeight: '100vh'
+      }}
+    >
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+        <Item>
+          <video ref={videoRef} width="100%" controls>
+            {videoUrl && <source src={videoUrl} type="video/mp4" />}
+          </video>
+          <div style={{ marginTop: '10px' }}>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <TextField
+                id="outlined-basic"
+                value={currentComment}
+                label="コメントを追加"
+                variant="outlined"
+                onChange={(e) => setCurrentComment(e.target.value)}
+                style={{ width: '80%' }}
+              />
+              <Button
+                variant="contained"
+                onClick={handleAddComment}
+                style={{ marginLeft: '10px' }}
+                size="large"
+              >
+                <SendIcon />
+              </Button>
+            </Stack>
+          </div>
+        </Item>
+        <Item>
+          <h1>コメント一覧</h1>
+          <div
+            style={{
+              marginTop: '20px',
+              textAlign: 'left',
+              maxHeight: '280px',
+              overflowY: 'auto'
+            }}
+          >
+            <ul>
+              {comments.map((comment, index) => (
+                <li key={index} style={{ marginBottom: '10px' }}>
+                  <strong>{comment.time.toFixed(2)}秒:</strong> {comment.text}
+                  <IconButton
+                    aria-label="削除"
+                    size="small"
+                    onClick={() => handleDeleteComment(index)}
+                    style={{ marginLeft: '10px' }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </li>
+              ))}
+            </ul>
+            <div ref={commentsEndRef} /> {/* スクロールのための空のdiv */}
+          </div>
+        </Item>
+        <button onClick={handleMakeExplanation}>
+          {isMovieRendering ? '動画を作成中です...' : 'AIの解説付き動画を作成'}
+        </button>
+      </Stack>
+    </body>
   )
 }
 
