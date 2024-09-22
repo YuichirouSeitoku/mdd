@@ -22,9 +22,10 @@ function Home(): JSX.Element {
   }
 
   const handleClick = (): void => {
-    const encodedFilePath = videoFilePath ? encodeURIComponent(videoFilePath) : null
-    const encodedKeyeventPath = keyeventPath ? encodeURIComponent(keyeventPath) : null
-    navigate(`/player?video=${encodedFilePath}&keyevent=${encodedKeyeventPath}`)
+    const query = new URLSearchParams()
+    if (videoFilePath) query.set('video', videoFilePath)
+    if (keyeventPath) query.set('keyevent', keyeventPath)
+    navigate(`/player?${query.toString()}`)
   }
 
   const startRecord = (): void => {

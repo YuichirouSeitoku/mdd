@@ -19,7 +19,7 @@ export const makeExplanations = async (
   console.log(event)
 
   // ファイル読み込み
-  const shortcutEvents = await loadProjectFile(mddprojectFilePath)
+  const [shortcutEvents, startAt] = await loadProjectFile(mddprojectFilePath)
 
   // ビデオデータを画像に分割して一時ディレクトリに保存
   const frameInterval = 10 //  FIXME: 仮決め
@@ -27,38 +27,29 @@ export const makeExplanations = async (
   await splitVideoData(videoPath, frameInterval, tmpDir)
 
   const files = await readdir(tmpDir)
-  const sortedFiles = files.sort()
+  const sortedFiles = files.sort().map((path: string) => join(tmpDir, path))
 
   // 解説生成
-  const startTime = 0 // FIXME: テスト用の開始時刻を設定 (秒に合わせる)
+  const startTime = startAt / 1000000
   const fps = await calcFPS(videoPath)
-  const explanations: Explanation[] = []
-  const createExplanation = (comment: Comment): void => {
-    const explanation = explainCommnet(
-      startTime,
-      comment,
-      shortcutEvents,
-      fps,
-      frameInterval,
-      sortedFiles
+  const explanations = await Promise.all(
+    comments.map((comment: Comment) =>
+      explainComment(startTime, comment, shortcutEvents, fps, frameInterval, sortedFiles)
     )
-    explanation.then((data) => {
-      explanations.push(data)
-    })
-  }
-  comments.forEach(createExplanation)
-
+  )
   return explanations
 }
 
-const loadProjectFile = async (mddprojectFilePath: string): Promise<ShortcutEvent[]> => {
+export const loadProjectFile = async (
+  mddprojectFilePath: string
+): Promise<[ShortcutEvent[], number]> => {
   const data = await readFile(mddprojectFilePath, 'utf8')
   const jsonData = JSON.parse(data)
 
   // データ読み込み
   const shortcutEvents: ShortcutEvent[] = jsonData['shortcutEvents']
 
-  return shortcutEvents
+  return [shortcutEvents, jsonData['shortcut']['startAt']]
 }
 
 const calcFPS = async (videoPath: string): Promise<number> => {
@@ -85,19 +76,26 @@ const splitVideoData = async (
   frameInterval: number,
   saveDir: string
 ): Promise<void> => {
-  ffmpeg(videoPath)
-    .on('error', (err: Error) => {
-      throw err
-    })
-    .output(join(saveDir, 'frame-%04d.png'))
-    .outputOptions([
-      `-vf select='not(mod(n\\,${frameInterval}))'`, // フレーム指定
-      '-vsync vfr', // フレームレートの同期
-      '-q:v 4' // 画像の品質
-    ])
+  return new Promise((resolve, reject) => {
+    ffmpeg(videoPath)
+      .on('end', () => {
+        console.log('ffmpeg called for split.')
+        resolve()
+      })
+      .on('error', (err: Error) => {
+        reject(err)
+      })
+      .output(join(saveDir, 'frame-%04d.png'))
+      .outputOptions([
+        `-vf select='not(mod(n\\,${frameInterval}))'`, // フレーム指定
+        '-vsync vfr', // フレームレートの同期
+        '-q:v 4' // 画像の品質
+      ])
+      .run()
+  })
 }
 
-const explainCommnet = async (
+const explainComment = async (
   startTime: number, // UNIX時間[s]
   comment: Comment,
   shorcutEvents: ShortcutEvent[], // キーボードショートカットのイベント

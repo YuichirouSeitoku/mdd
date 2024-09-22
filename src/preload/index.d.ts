@@ -1,6 +1,6 @@
 import { IpcRendererEvent } from 'electron'
 import { ElectronAPI } from '@electron-toolkit/preload'
-import { Comment } from '../types'
+import { Comment, Explanation } from '../types'
 
 declare global {
   interface Window {
@@ -8,6 +8,7 @@ declare global {
     api: API
     fileSystem: FileSystemAPI
     explanation: ExplanationAPI
+    video: VideoAPI
   }
 
   interface API {
@@ -24,5 +25,13 @@ declare global {
       mddprojectFilePath: string,
       comments: Comment[]
     ) => Promise<Explanation[]>
+  }
+
+  interface VideoAPI {
+    renderVideo: (
+      videoPath: string,
+      mddprojectFilePath: string,
+      explanations: Explanation[]
+    ) => Promise<Blob>
   }
 }

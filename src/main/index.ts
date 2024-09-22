@@ -4,10 +4,8 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { ShortcutWatcher } from './shortcut'
 import { registerRecorder } from './recorder'
 import icon from '../../resources/icon.png?asset'
-import path from 'path'
-import { createSubtitleMovie } from './subtitleMovie'
-import type { Subtitle } from './subtitleMovie'
 import { makeExplanations } from './explanations'
+import { renderVideo } from './renderer'
 
 function createWindow(): BrowserWindow {
   // Create the browser window.
@@ -78,7 +76,10 @@ app.whenReady().then(() => {
 
   // 解説作成ハンドラ
   ipcMain.handle('make-explanations', makeExplanations)
-  
+
+  // 動画作成ハンドラ
+  ipcMain.handle('render-video', renderVideo)
+
   const mainWindow = createWindow()
 
   registerRecorder(watcher, mainWindow)
@@ -99,17 +100,3 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
-// In this file you can include the rest of your app"s specific main process
-// code. You can also put them in separate files and require them here.
-
-const subtitles: Subtitle[] = [
-  { startTime: '0:00:01.00', endTime: '0:00:05.00', text: 'Hello, this is the first subtitle!' },
-  { startTime: '0:00:06.00', endTime: '0:00:10.00', text: 'And this is the second subtitle!' }
-]
-
-const input_video_path = path.join(app.getAppPath(), 'resources', 'record.mp4')
-const output_video_path = path.join(app.getAppPath(), 'resources', 'subtitle_record.mp4')
-
-// createSubtitleMovieを呼び出すタイミングは、他プログラムと結合するときに再度検討
-createSubtitleMovie(subtitles, input_video_path, output_video_path)

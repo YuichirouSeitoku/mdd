@@ -1,17 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import type { Comment } from '../../../types'
+import type { Comment, Explanation } from '../../../types'
 
 const Player: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
   const [currentComment, setCurrentComment] = useState<string>('')
+  // TODO: 解説を表示させたい場合は必要
+  // const [explanations, setExplanations] = useState<Explanation[]>([])
+  const [isMovieRendering, setIsMovieRendering] = useState<boolean>(false)
 
   // クエリパラメータを取得
   const query = new URLSearchParams(useLocation().search)
   const videoFilePath = query.get('video')
-  // const keyeventFilePath = query.get('keyevent')
+  const keyeventFilePath = query.get('keyevent')
 
   // ページ読み込み時にクエリパラメータから動画をセットする
   useEffect(() => {
@@ -27,6 +30,36 @@ const Player: React.FC = () => {
         console.error('ファイル読み込みエラー', err)
       })
   }, [])
+
+  // 解説を出す
+  const handleMakeExplanation = async (): Promise<void> => {
+    if (!videoFilePath) return
+    if (!keyeventFilePath) return
+    setIsMovieRendering(true)
+    // window.explanation
+    //   .makeExplanations(videoFilePath, keyeventFilePath, comments)
+    //   .then((explanations: Explanation[]) => {
+    //     // TODO: 解説を表示させたい場合は必要
+    //     // setExplanations(explanations)
+    //     console.log(explanations)
+    //     window.video
+    //       .renderVideo(videoFilePath, keyeventFilePath, explanations)
+    //       .then((video: Blob) => {
+    //         setIsMovieRendering(false)
+    //         const url = URL.createObjectURL(video)
+    //         location.href = url
+    //       })
+    //   })
+    const explanations = await window.explanation.makeExplanations(
+      videoFilePath,
+      keyeventFilePath,
+      comments
+    )
+    console.log(explanations)
+    const video = await window.video.renderVideo(videoFilePath, keyeventFilePath, explanations)
+    const url = URL.createObjectURL(video)
+    location.href = url
+  }
 
   // コメントを追加
   const handleAddComment = (): void => {
@@ -78,6 +111,9 @@ const Player: React.FC = () => {
           </ul>
         </div>
       </div>
+      <button onClick={handleMakeExplanation}>
+        {isMovieRendering ? '動画を作成中です...' : 'AIの解説付き動画を作成'}
+      </button>
     </div>
   )
 }
