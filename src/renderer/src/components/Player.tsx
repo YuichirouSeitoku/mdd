@@ -32,24 +32,33 @@ const Player: React.FC = () => {
   }, [])
 
   // 解説を出す
-  const handleMakeExplanation = (): void => {
+  const handleMakeExplanation = async (): Promise<void> => {
     if (!videoFilePath) return
     if (!keyeventFilePath) return
     setIsMovieRendering(true)
-    window.explanation
-      .makeExplanations(videoFilePath, keyeventFilePath, comments)
-      .then((explanations: Explanation[]) => {
-        // TODO: 解説を表示させたい場合は必要
-        // setExplanations(explanations)
-        console.log(explanations)
-        window.video
-          .renderVideo(videoFilePath, keyeventFilePath, explanations)
-          .then((video: Blob) => {
-            setIsMovieRendering(false)
-            const url = URL.createObjectURL(video)
-            location.href = url
-          })
-      })
+    // window.explanation
+    //   .makeExplanations(videoFilePath, keyeventFilePath, comments)
+    //   .then((explanations: Explanation[]) => {
+    //     // TODO: 解説を表示させたい場合は必要
+    //     // setExplanations(explanations)
+    //     console.log(explanations)
+    //     window.video
+    //       .renderVideo(videoFilePath, keyeventFilePath, explanations)
+    //       .then((video: Blob) => {
+    //         setIsMovieRendering(false)
+    //         const url = URL.createObjectURL(video)
+    //         location.href = url
+    //       })
+    //   })
+    const explanations = await window.explanation.makeExplanations(
+      videoFilePath,
+      keyeventFilePath,
+      comments
+    )
+    console.log(explanations)
+    const video = await window.video.renderVideo(videoFilePath, keyeventFilePath, explanations)
+    const url = URL.createObjectURL(video)
+    location.href = url
   }
 
   // コメントを追加

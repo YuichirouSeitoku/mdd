@@ -27,14 +27,14 @@ export const makeExplanations = async (
   await splitVideoData(videoPath, frameInterval, tmpDir)
 
   const files = await readdir(tmpDir)
-  const sortedFiles = files.sort()
+  const sortedFiles = files.sort().map((path: string) => join(tmpDir, path))
 
   // 解説生成
   const startTime = startAt / 1000000
   const fps = await calcFPS(videoPath)
   const explanations = await Promise.all(
     comments.map((comment: Comment) =>
-      explainCommnet(startTime, comment, shortcutEvents, fps, frameInterval, sortedFiles)
+      explainComment(startTime, comment, shortcutEvents, fps, frameInterval, sortedFiles)
     )
   )
   return explanations
@@ -76,20 +76,26 @@ const splitVideoData = async (
   frameInterval: number,
   saveDir: string
 ): Promise<void> => {
-  await ffmpeg(videoPath)
-    .on('error', (err: Error) => {
-      throw err
-    })
-    .output(join(saveDir, 'frame-%04d.png'))
-    .outputOptions([
-      `-vf select='not(mod(n\\,${frameInterval}))'`, // フレーム指定
-      '-vsync vfr', // フレームレートの同期
-      '-q:v 4' // 画像の品質
-    ])
-  console.log('ffmpeg called for split.')
+  return new Promise((resolve, reject) => {
+    ffmpeg(videoPath)
+      .on('end', () => {
+        console.log('ffmpeg called for split.')
+        resolve()
+      })
+      .on('error', (err: Error) => {
+        reject(err)
+      })
+      .output(join(saveDir, 'frame-%04d.png'))
+      .outputOptions([
+        `-vf select='not(mod(n\\,${frameInterval}))'`, // フレーム指定
+        '-vsync vfr', // フレームレートの同期
+        '-q:v 4' // 画像の品質
+      ])
+      .run()
+  })
 }
 
-const explainCommnet = async (
+const explainComment = async (
   startTime: number, // UNIX時間[s]
   comment: Comment,
   shorcutEvents: ShortcutEvent[], // キーボードショートカットのイベント

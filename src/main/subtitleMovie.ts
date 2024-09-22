@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'fs/promises'
 import ffmpeg from 'fluent-ffmpeg'
 
 // TODO: 型定義は適切なファイルで宣言
@@ -41,17 +41,21 @@ export async function createSubtitleMovie(
 
   // ASSファイルを保存
   const assFilename = 'output.ass'
-  await fs.writeFileSync(assFilename, assContent, 'utf8')
+  await fs.writeFile(assFilename, assContent, 'utf8')
 
   // fluent-ffmpegでASSファイルと動画を結合
-  console.log(input_video_path)
-  await ffmpeg(input_video_path)
-    .outputOptions('-vf', `ass=${assFilename}`) // 字幕フィルターを使ってASS字幕を追加
-    .save(output_video_path) // 出力する動画ファイル
-    .on('end', () => {
-      console.log('success: create movie')
-    })
-    .on('error', (err) => {
-      console.error('failed create movie: ', err)
-    })
+  return new Promise((resolve, reject) => {
+    console.log(input_video_path)
+    ffmpeg(input_video_path)
+      .outputOptions('-vf', `ass=${assFilename}`) // 字幕フィルターを使ってASS字幕を追加
+      .save(output_video_path) // 出力する動画ファイル
+      .on('end', () => {
+        console.log('success: create movie')
+        resolve()
+      })
+      .on('error', (err) => {
+        console.error('failed create movie: ', err)
+        reject(err)
+      })
+  })
 }
