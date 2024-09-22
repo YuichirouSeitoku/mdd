@@ -32,22 +32,11 @@ export const makeExplanations = async (
   // 解説生成
   const startTime = startAt / 1000000
   const fps = await calcFPS(videoPath)
-  const explanations: Explanation[] = []
-  const createExplanation = (comment: Comment): void => {
-    const explanation = explainCommnet(
-      startTime,
-      comment,
-      shortcutEvents,
-      fps,
-      frameInterval,
-      sortedFiles
+  const explanations = await Promise.all(
+    comments.map((comment: Comment) =>
+      explainCommnet(startTime, comment, shortcutEvents, fps, frameInterval, sortedFiles)
     )
-    explanation.then((data) => {
-      explanations.push(data)
-    })
-  }
-  comments.forEach(createExplanation)
-
+  )
   return explanations
 }
 
