@@ -4,20 +4,21 @@ import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Input from '@mui/material/Input'
+import FilledInput from '@mui/material/FilledInput'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
 function Home(): JSX.Element {
   const navigate = useNavigate()
-  const [videoFile, setVideoFile] = useState<File | null>(null)
+  // WARN: 動画再生のテストのための処理であるため後で置き換える
+  const [videoFilePath, setVideoFilePath] = useState<string | null>(null)
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const selectedFile = event.target.files?.[0]
-    if (selectedFile) setVideoFile(selectedFile)
+    if (selectedFile) setVideoFilePath(selectedFile.path)
   }
 
   const handleClick = (): void => {
-    const encodedFilePath = videoFile ? encodeURIComponent(videoFile.path) : null
+    const encodedFilePath = videoFilePath ? encodeURIComponent(videoFilePath) : null
     navigate(`/player?video=${encodedFilePath}`)
   }
 
@@ -50,10 +51,11 @@ function Home(): JSX.Element {
         </Typography>
 
         <label htmlFor="file-upload">
-          <Input
+          <FilledInput
             id="file-upload"
             type="file"
-            accept="video/mp4"
+            inputProps={{ accept: 'video/mp4' }}
+            // accept="video/mp4"
             onChange={handleFileChange}
             style={{ display: 'none' }} // Hide the default input
           />
@@ -72,16 +74,16 @@ function Home(): JSX.Element {
           </Button>
         </label>
 
-        {videoFile && (
+        {videoFilePath && (
           <Typography variant="body1" style={{ color: '#333', marginTop: '10px' }}>
-            選択されたファイル: <strong>{videoFile.name}</strong>
+            選択されたファイル: <strong>{videoFilePath}</strong>
           </Typography>
         )}
 
         <Button
           variant="contained"
           onClick={handleClick}
-          disabled={!videoFile}
+          disabled={!videoFilePath}
           style={{
             alignSelf: 'center',
             backgroundColor: '#007bff',
