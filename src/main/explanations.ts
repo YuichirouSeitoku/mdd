@@ -76,7 +76,7 @@ const splitVideoData = async (
   frameInterval: number,
   saveDir: string
 ): Promise<void> => {
-  ffmpeg(videoPath)
+  await ffmpeg(videoPath)
     .on('error', (err: Error) => {
       throw err
     })
@@ -86,6 +86,7 @@ const splitVideoData = async (
       '-vsync vfr', // フレームレートの同期
       '-q:v 4' // 画像の品質
     ])
+  console.log('ffmpeg called for split.')
 }
 
 const explainCommnet = async (
