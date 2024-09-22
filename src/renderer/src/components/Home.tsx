@@ -9,6 +9,10 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
 function Home(): JSX.Element {
   const navigate = useNavigate()
+
+  const [projectName, setProjectName] = useState<string>('')
+  const [keyeventPath, setKeyeventPath] = useState<string | null>(null)
+  const [recording, setRecording] = useState<boolean>(false)
   // WARN: 動画再生のテストのための処理であるため後で置き換える
   const [videoFilePath, setVideoFilePath] = useState<string | null>(null)
 
@@ -19,7 +23,20 @@ function Home(): JSX.Element {
 
   const handleClick = (): void => {
     const encodedFilePath = videoFilePath ? encodeURIComponent(videoFilePath) : null
-    navigate(`/player?video=${encodedFilePath}`)
+    const encodedKeyeventPath = keyeventPath ? encodeURIComponent(keyeventPath) : null
+    navigate(`/player?video=${encodedFilePath}&keyevent=${encodedKeyeventPath}`)
+  }
+
+  const startRecord = (): void => {
+    if (recording) return
+    setRecording(true)
+    window.api.startRecord(projectName)
+  }
+  const stopRecord = async (): Promise<void> => {
+    if (!recording) return
+    const outputPath = await window.api.stopRecord()
+    if (outputPath) setKeyeventPath(outputPath)
+    setRecording(false)
   }
 
   return (
@@ -34,6 +51,23 @@ function Home(): JSX.Element {
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' // 影を追加
       }}
     >
+      <Stack
+        spacing={3}
+        style={{
+          marginTop: '20px',
+          backgroundColor: '#e1f5fe',
+          borderRadius: '10px',
+          padding: '20px'
+        }}
+      >
+        <input type="text" onChange={(e) => setProjectName(e.target.value)} />
+        <button disabled={recording} onClick={startRecord}>
+          録画開始
+        </button>
+        <button disabled={!recording} onClick={stopRecord}>
+          録画終了
+        </button>
+      </Stack>
       <Stack
         spacing={3}
         style={{
