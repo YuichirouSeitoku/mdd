@@ -6,6 +6,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import FilledInput from '@mui/material/FilledInput'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import TextField from '@mui/material/TextField'
 
 function Home(): JSX.Element {
   const navigate = useNavigate()
@@ -60,13 +61,18 @@ function Home(): JSX.Element {
           padding: '20px'
         }}
       >
-        <input type="text" onChange={(e) => setProjectName(e.target.value)} />
-        <button disabled={recording} onClick={startRecord}>
+        <TextField
+          id="outlined-basic"
+          label="レコード名称"
+          variant="outlined"
+          onChange={(e) => setProjectName(e.target.value)}
+        />
+        <Button variant="contained" disabled={recording} onClick={startRecord}>
           録画開始
-        </button>
-        <button disabled={!recording} onClick={stopRecord}>
+        </Button>
+        <Button variant="contained" disabled={!recording} onClick={stopRecord}>
           録画終了
-        </button>
+        </Button>
       </Stack>
       <Stack
         spacing={3}
