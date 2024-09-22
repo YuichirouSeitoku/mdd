@@ -6,6 +6,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import FilledInput from '@mui/material/FilledInput'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import TextField from '@mui/material/TextField'
 
 function Home(): JSX.Element {
   const navigate = useNavigate()
@@ -44,35 +45,41 @@ function Home(): JSX.Element {
     <Paper
       elevation={3}
       style={{
-        padding: '30px',
-        maxWidth: '600px',
-        margin: '20px auto',
+        padding: '20px',
+        maxWidth: '400px',
+        height: '600px',
+        // margin: '20px auto',
         borderRadius: '10px',
         background: 'linear-gradient(to bottom right, #4fc3f7, #e1f5fe)',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' // 影を追加
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
       }}
     >
       <Stack
         spacing={3}
         style={{
-          marginTop: '20px',
+          // marginTop: '20px',
           backgroundColor: '#e1f5fe',
           borderRadius: '10px',
           padding: '20px'
         }}
       >
-        <input type="text" onChange={(e) => setProjectName(e.target.value)} />
-        <button disabled={recording} onClick={startRecord}>
+        <TextField
+          id="outlined-basic"
+          label="レコード名称"
+          variant="outlined"
+          onChange={(e) => setProjectName(e.target.value)}
+        />
+        <Button variant="contained" disabled={recording} onClick={startRecord}>
           録画開始
-        </button>
-        <button disabled={!recording} onClick={stopRecord}>
+        </Button>
+        <Button variant="contained" disabled={!recording} onClick={stopRecord}>
           録画終了
-        </button>
+        </Button>
       </Stack>
       <Stack
         spacing={3}
         style={{
-          marginTop: '20px',
+          marginTop: '10px',
           backgroundColor: '#e1f5fe',
           borderRadius: '10px',
           padding: '20px'
@@ -81,7 +88,7 @@ function Home(): JSX.Element {
         <Typography variant="h5" style={{ fontWeight: 'bold', color: '#333' }}>
           動画ファイルのアップロード
         </Typography>
-        <Typography variant="body2" style={{ color: '#555' }}>
+        <Typography variant="body2" style={{ color: '#555', marginTop: '10px' }}>
           選択したファイルは動画再生画面で再生されます。
         </Typography>
 
@@ -110,7 +117,15 @@ function Home(): JSX.Element {
         </label>
 
         {videoFilePath && (
-          <Typography variant="body1" style={{ color: '#333', marginTop: '10px' }}>
+          <Typography
+            variant="body1"
+            style={{
+              color: '#333',
+              // marginTop: '10px',
+              maxHeight: '50px', // 高さを固定
+              overflowY: 'auto' // ファイル名が長い場合にスクロール
+            }}
+          >
             選択されたファイル: <strong>{videoFilePath}</strong>
           </Typography>
         )}
